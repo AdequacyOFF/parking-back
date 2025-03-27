@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+                   <include file="sql/20230220_0001_init_b3959d.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20230222_0002_user_305e62.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20230527_0003_devices_c96dd3.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20240918_0004_add_stations_table_3c50c5.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20240821_0004_remove_personal_column_bc0e5e.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20240918_0005_add_card_table_b38fd6.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20240922_0006_add_promotions_table_94d9d5.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20240929_0007_add_columns_a7a5d1.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20241023_0008_card_qr_column_edit_b0a0ec.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20250313_0009_add_admin_table_7a89c7.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20250313_0010_fcm_token_9ca6b8.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20250313_0011_promotion_photo_e7046c.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20250317_0012_birth_date_9eff07.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20250317_0013_orders_e68d8f.sql" relativeToChangelogFile="true" />
+</databaseChangeLog>

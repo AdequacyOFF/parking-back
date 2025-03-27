@@ -1,0 +1,72 @@
+version: "3.7"
+# docker-compose for development processes
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "9090:8080"
+    command: ["make", "local_run"]
+    environment:
+      POSTGRES_PASSWORD: backendapp
+      POSTGRES_USER: backendapp
+      POSTGRES_DB: backendapp
+    volumes:
+      - .:/usr/src/app/
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      liquibase:
+        condition: service_completed_successfully
+    networks:
+      - service-network
+
+  postgres:
+    image: postgis/postgis:14-3.3
+    ports:
+      - "55444:5432"
+    environment:
+      POSTGRES_PASSWORD: backendapp
+      POSTGRES_USER: backendapp
+      POSTGRES_DB: backendapp
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U backendapp -d backendapp" ]
+      interval: 3s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - service-network
+
+  liquibase:
+    image: liquibase/liquibase
+    command: --defaults-file=/liquibase/changelog/liquibase.properties --searchPath=/liquibase/changelog/ update
+    volumes:
+      - ./migrations/:/liquibase/changelog/
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - service-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 3s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - service-network
+
+
+networks:
+  service-network:
+    driver: bridge

@@ -1,0 +1,40 @@
+---
+include:
+  project: 'devops/gitlab-ci'
+  ref: master
+  file:
+    - '/astra-ci-cd/.backend.astra.yml'
+
+variables:
+  CI_K8S_ENABLE_ROUTE:                "true"
+  CI_VAULT_ANNOTATION:                "true"
+  PYTHON_APP_PATH:                    "app"
+# PYTHON_LINT_ALL:                    "true"
+  CI_INIT_MIGRATIONS:                 "true"
+  CI_COMMAND_IN_CONTAINER:            "python3 auth_backend.py"
+  CI_LIVENESS_PROBE:                  "false"
+  CI_LIVENESS_PROBE_PATH:             "/srv/health"
+  CI_LIVENESS_PROBE_PORT:             "8080"
+  CI_LIVENESS_PROBE_TIMEOUTSECONDS:   "30"
+  CI_LIVENESS_PROBE_PERIODSECONDS:    "10"
+  CI_LIVENESS_PROBE_SUCCESSTHRESHOLD: "1"
+  CI_LIVENESS_PROBE_FAILURETHRESHOLD: "3"
+  CI_STAGE_URL:                       "https://backend-app-astra.apps.dev.fly-teh.ru"
+
+deploy:to:prod:
+  stage: deploy-to-prod
+  allow_failure: true
+  trigger:
+    project: 'devops/deploy-prod-astra'
+    branch: main
+    strategy: depend
+  variables:
+    DOWNSTREAM_CI_PROJECT_NAME:      "${CI_PROJECT_NAME}"
+    DOWNSTREAM_CI_COMMIT_REF_SLUG:   "${CI_COMMIT_REF_SLUG}"
+    DOWNSTREAM_CI_REGISTRY_IMAGE:    "${CI_REGISTRY_IMAGE}"
+    DOWNSTREAM_CI_REGISTRY:          "${CI_REGISTRY}"
+    DOWNSTREAM_CI_IMAGE_TAG:         "${CI_COMMIT_TAG}-${CI_PIPELINE_ID}"
+    DOWNSTREAM_CI_K8S_ANSIBLE_TOKEN: "${CI_K8S_ANSIBLE_TOKEN}"
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: manual
