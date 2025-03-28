@@ -18,6 +18,8 @@ from app.use_cases.user.register import RegisterUseCase
 from app.views.user.get_fcm_token import GetFCMTokenView
 from app.views.user.me import GetUserView
 
+# from app.workers.account.account_update import CronAccountUpdatedHandler, init_cron_account_handler
+
 
 class WebAppContainer(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(packages=["app.api", __name__])

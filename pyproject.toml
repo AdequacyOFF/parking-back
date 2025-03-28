@@ -17,6 +17,10 @@ cryptography = "^43.0.0"
 fastapi = {extras = ["all"], version = "^0.111.0"}
 aiohttp = {extras = ["speedups"], version = "^3.8.4"}
 
+# S3
+aioboto3 = "11.1.0"
+pillow = "^11.1.0"
+
 # DB
 asyncpg = "^0.27.0"
 sqlalchemy = "^2.0.4"
