@@ -222,5 +222,4 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-migrations/liquibase.properties
 .ruff_cache
