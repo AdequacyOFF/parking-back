@@ -19,7 +19,3 @@ class GetAdminSessionCMD:
     session_id: UUID
     token: str
 
-
-@dataclass
-class ChangeMinFuelVolume:
-    volume: int

@@ -12,6 +12,7 @@ class RegisterUseCase:
     def __init__(self, uow: UnitOfWork):
         self._uow = uow
 
+
     async def __call__(self, user_id: UUID, cmd: RegisterCMD) -> RegisterResponse:
         async with self._uow.begin():
             try:
@@ -22,7 +23,7 @@ class RegisterUseCase:
             try:
                 user.register(
                     cmd=RegisterUserDTO(
-                        first_name=cmd.first_name, last_name=cmd.last_name, sex=cmd.sex, birth_date=cmd.birth_date
+                        first_name=cmd.first_name, last_name=cmd.last_name
                     )
                 )
             except InvalidStatusException as e:
@@ -35,6 +36,4 @@ class RegisterUseCase:
                 status=user.status,
                 first_name=user.first_name,
                 last_name=user.last_name,
-                sex=user.sex,
-                birth_date=cmd.birth_date,
             )

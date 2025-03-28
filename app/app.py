@@ -31,7 +31,6 @@ def create_app() -> FastAPI:
         if resources is None:
             raise ValueError("Expected an awaitable, got None")
         await resources
-        await container.client_factory.provides.init_all()  # type: ignore
 
     async def on_shutdown() -> None:
         shutdown_res = container.shutdown_resources()

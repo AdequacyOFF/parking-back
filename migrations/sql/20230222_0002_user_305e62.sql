@@ -1,19 +1,9 @@
-CREATE TYPE sex_type AS ENUM ('MALE', 'FEMALE');
-
 CREATE TABLE IF NOT EXISTS accounts.user (
     id UUID PRIMARY KEY,
-    created_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     phone_number VARCHAR(50) NOT NULL,
     status VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NULL,
-    last_name VARCHAR(50) NULL,
-    middle_name VARCHAR(50) NULL,
-    sex sex_type NULL,
-    birth_date DATE NULL,
-    user_agreement BOOLEAN NOT NULL DEFAULT FALSE,
-    privacy_policy BOOLEAN NOT NULL DEFAULT FALSE,
-    company_rules BOOLEAN NOT NULL DEFAULT FALSE
+    last_name VARCHAR(50) NULL
 );
 CREATE INDEX IF NOT EXISTS phone_number_idx ON accounts.user USING btree(phone_number);
 

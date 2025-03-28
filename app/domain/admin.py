@@ -3,7 +3,7 @@ from uuid import UUID
 
 from app.domain.exception import SessionAlreadyExpiredException
 from app.domain.user import Session
-from app.dto.admin import AdminStatus, ChangeMinFuelVolume, CreateAdminSessionCMD, GetAdminSessionCMD
+from app.dto.admin import AdminStatus, CreateAdminSessionCMD, GetAdminSessionCMD
 from app.dto.session import InitSessionCMD, SessionStatus
 
 
@@ -14,7 +14,6 @@ class Admin:
     status: AdminStatus
     username: str
     password_hash: str
-    min_fuel_volume: int
     sessions: list[Session] = field(default_factory=list)
 
     def add_session(self, cmd: CreateAdminSessionCMD) -> None:
@@ -28,5 +27,3 @@ class Admin:
                 return session
         raise SessionAlreadyExpiredException
 
-    def change_min_fuel_volume(self, cmd: ChangeMinFuelVolume) -> None:
-        self.min_fuel_volume = cmd.volume

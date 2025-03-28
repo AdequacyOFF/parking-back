@@ -8,16 +8,6 @@ class SrvSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="SRV_")
 
 
-class EventSettings(BaseSettings):
-    host: str
-    port: str
-    password: str
-    username: str
-    account_topic: str
-
-    model_config = SettingsConfigDict(env_prefix="KAFKA_")
-
-
 class AuthJWTSettings(BaseSettings):
     public_key: str
     private_key: str
@@ -61,63 +51,6 @@ class RedisSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="REDIS_")
 
 
-class NotificationSettings(BaseSettings):
-    is_enabled: bool = False
-    base_url: str
-    total_timeout: float
-    connect_timeout: float
-    connection_limit: int
-    validate_cert: bool
-    user: str
-    password: str
-
-    model_config = SettingsConfigDict(env_prefix="NTF_")
-
-
-class TelegramNotificationSettings(BaseSettings):
-    is_enabled: bool = False
-    base_url: str
-    total_timeout: float
-    connect_timeout: float
-    connection_limit: int
-    validate_cert: bool
-    api_key: str
-
-    model_config = SettingsConfigDict(env_prefix="TG_")
-
-
-class CardMasterSettings(BaseSettings):
-    base_url: str
-    total_timeout: float
-    connect_timeout: float
-    connection_limit: int
-    validate_cert: bool
-    api_key: str
-
-    model_config = SettingsConfigDict(env_prefix="CARD_")
-
-
-class FileStorageSettings(BaseSettings):
-    url: str
-    bucket_name: str
-    files_path: str
-    aws_access_key_id: str
-    aws_secret_access_key: str
-    ttl_secs: int
-
-    model_config = SettingsConfigDict(env_prefix="FS_")
-
-
-class MailSettings(BaseSettings):
-    addr: str
-    smtp_host: str
-    smtp_port: int
-    smtp_username: str
-    smtp_password: str
-
-    model_config = SettingsConfigDict(env_file=".env", env_prefix="MAIL_")
-
-
 class Settings(BaseSettings):
     load_dotenv()
     srv: SrvSettings = SrvSettings()
@@ -126,11 +59,6 @@ class Settings(BaseSettings):
     logging: LoggingSettings = LoggingSettings()
     database: DatabaseSettings = DatabaseSettings()
     redis: RedisSettings = RedisSettings()
-    notifications: NotificationSettings = NotificationSettings()
-    telegram_notifications: TelegramNotificationSettings = TelegramNotificationSettings()
-    card_master: CardMasterSettings = CardMasterSettings()
-    fs_settings: FileStorageSettings = FileStorageSettings()
-    mail: MailSettings = MailSettings()
 
 
 settings = Settings()

@@ -1,5 +1,5 @@
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 
 from app.api.errors.code import ErrorCode
 from app.api.models.base import ApiResponse
@@ -9,8 +9,6 @@ from app.api.user.schemas import (
     DeleteUserResponse,
     GetFCMTokenResponse,
     GetUserResponse,
-    RegisterAgreementsCMD,
-    RegisterAgreementsResponse,
     RegisterCMD,
     RegisterResponse,
 )
@@ -18,7 +16,6 @@ from app.dependencies.web_app import WebAppContainer
 from app.use_cases.user.change_user import ChangeUserUseCase
 from app.use_cases.user.delete_user import DeleteUserUseCase
 from app.use_cases.user.register import RegisterUseCase
-from app.use_cases.user.register_agreement import RegisterAgreementsUseCase
 from app.utils.auth.jwt import AuthJWT
 from app.utils.auth.schemas import AccessTokenData
 from app.views.user.get_fcm_token import GetFCMTokenView
@@ -56,20 +53,6 @@ async def register(
     use_case: RegisterUseCase = Depends(Provide[WebAppContainer.user_register_use_case]),
 ) -> ApiResponse[RegisterResponse]:
     result = await use_case(user_id=token_data.user.id, cmd=command)
-    return ApiResponse(result=result, error_code=ErrorCode.SUCCESS, message="Success")
-
-
-@router.post("/registerAgreements", response_model=ApiResponse[RegisterAgreementsResponse])
-@inject
-async def register_agreements(
-    command: RegisterAgreementsCMD,
-    token_data: AccessTokenData = Depends(AuthJWT.access_status_required()),
-    use_case: RegisterAgreementsUseCase = Depends(Provide[WebAppContainer.user_register_agreements_use_case]),
-) -> ApiResponse[RegisterAgreementsResponse]:
-    result = await use_case(
-        cmd=command,
-        user_id=token_data.user.id,
-    )
     return ApiResponse(result=result, error_code=ErrorCode.SUCCESS, message="Success")
 
 

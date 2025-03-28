@@ -1,1 +1,0 @@
-ALTER TABLE accounts.user ADD COLUMN IF NOT EXISTS birth_date DATE NULL;

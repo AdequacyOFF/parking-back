@@ -11,7 +11,6 @@ from app.utils.model import ApiCamelModel
 
 class InitCMD(ApiCamelModel):
     phone_number: str = Field(examples=["+79997778855"], description="User phone number", min_length=12, max_length=50)
-    use_telegram: bool = Field(False, description="Использовать телеграм")
 
     @field_validator("phone_number")
     def validate_phone_number(cls, phone_number: str) -> str:

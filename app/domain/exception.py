@@ -27,15 +27,3 @@ class InvalidStatusException(DomainException):
 
 class SessionAlreadyExpiredException(DomainException):
     message = "Session is already expired"
-
-
-class AgreementsNotAcceptedException(DomainException):
-    message = "All agreements must be accepted"
-
-
-class InvalidFileExtensionDomainException(DomainException):
-    pass
-
-
-class FileInvalidFormatDomainException(DomainException):
-    pass

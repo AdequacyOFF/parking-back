@@ -1,9 +1,8 @@
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import datetime
 from uuid import UUID, uuid4
 
 from app.domain.exception import (
-    AgreementsNotAcceptedException,
     InvalidOTPException,
     InvalidStatusException,
     OTPExpiredException,
@@ -11,18 +10,13 @@ from app.domain.exception import (
     SessionAlreadyExpiredException,
 )
 from app.domain.session import OTP, Device, Session
-from app.dto.card import CardState, CardType, CreateCardCMD
 from app.dto.session import CreateDeviceCMD, InitSessionCMD, OTPStatus, SessionStatus, UpdateDeviceCMD
 from app.dto.user import (
-    AcceptAgreementsCMD,
-    CreateOrderRequestCMD,
     DeviceInfo,
     GetUserSessionCMD,
     GetUserSessionForDeleteCMD,
     InitUserCMD,
     RegisterUserDTO,
-    SubmitFeedbackCMD,
-    UserSexType,
     UserStatus,
     VerifyOTPUserDTO,
 )
@@ -39,52 +33,17 @@ class OrderRequest:
     feedback_score: int | None = field(default=None)
     feedback_text: str | None = field(default=None)
 
-    @classmethod
-    def create(cls, cmd: CreateOrderRequestCMD) -> "OrderRequest":
-        return cls(
-            id=uuid4(),
-            fuel_type=cmd.fuel_type,
-            volume=cmd.volume,
-            comment=cmd.comment,
-        )
-
-    def submit_feedback(self, cmd: SubmitFeedbackCMD) -> None:
-        if cmd.feedback_text:
-            self.feedback_text = cmd.feedback_text
-        self.feedback_score = cmd.feedback_score
-
-
-@dataclass
-class Card:
-    id: UUID
-    qr: str
-    bonuses: int
-    type: CardType
-    state: CardState
-
-    @classmethod
-    def create(cls, cmd: CreateCardCMD) -> "Card":
-        return cls(id=uuid4(), qr=cmd.qr, bonuses=0, type=cmd.type, state=CardState.ACTIVE)
-
 
 @dataclass
 class User:
     id: UUID
     phone_number: str
     status: UserStatus
-    card: Card | None = field(default=None)
     first_name: str | None = field(default=None)
     last_name: str | None = field(default=None)
-    sex: UserSexType | None = field(default=None)
-    birth_date: date | None = field(default=None)
-    user_agreement: bool = field(default=False)
-    privacy_policy: bool = field(default=False)
-    company_rules: bool = field(default=False)
     otp_code: OTP | None = field(default=None)
     sessions: list[Session] = field(default_factory=list)
     devices: set[Device] = field(default_factory=set)
-    order_requests: list[OrderRequest] = field(default_factory=list)
-    # events: list[Event] = field(default_factory=list)
 
     def __init__(
         self,
@@ -93,12 +52,7 @@ class User:
         status: UserStatus,
         first_name: str | None = None,
         last_name: str | None = None,
-        sex: UserSexType | None = None,
-        user_agreement: bool = False,
-        privacy_policy: bool = False,
-        company_rules: bool = False,
         otp_code: OTP | None = None,
-        birth_date: date | None = None,
     ) -> None:
         super().__init__()
         self.id = id
@@ -106,11 +60,6 @@ class User:
         self.status = status
         self.first_name = first_name
         self.last_name = last_name
-        self.sex = sex
-        self.birth_date = birth_date
-        self.user_agreement = user_agreement
-        self.privacy_policy = privacy_policy
-        self.company_rules = company_rules
         self.otp_code = otp_code
         self.sessions = []
         self.devices = set()
@@ -127,14 +76,6 @@ class User:
     @property
     def can_register(self) -> bool:
         return self.status in (UserStatus.INIT, UserStatus.DELETED)
-
-    @property
-    def can_create_order_request(self) -> bool:
-        return self.status == UserStatus.ACTIVE
-
-    @property
-    def can_submit_feedback(self) -> bool:
-        return self.status == UserStatus.ACTIVE
 
     @property
     def is_deleted(self) -> bool:
@@ -182,20 +123,6 @@ class User:
         self.status = UserStatus.REGISTERED
         self.first_name = cmd.first_name
         self.last_name = cmd.last_name
-        self.sex = cmd.sex
-        self.birth_date = cmd.birth_date
-
-    def create_bonus_card(self, card: Card) -> None:
-        self.card = card
-
-    def accept_agreements(self, cmd: AcceptAgreementsCMD) -> None:
-        if not cmd.user_agreement or not cmd.privacy_policy or not cmd.company_rules:
-            raise AgreementsNotAcceptedException
-
-        self.user_agreement = cmd.user_agreement
-        self.privacy_policy = cmd.privacy_policy
-        self.company_rules = cmd.company_rules
-        self.status = UserStatus.ACTIVE
 
     def get_session(self, cmd: GetUserSessionCMD) -> Session:
         for session in self.sessions:
@@ -240,9 +167,3 @@ class User:
             )
             self.devices.add(device)
         return device.id
-
-    def create_request(self, request: OrderRequest) -> None:
-        self.order_requests.append(request)
-
-    def get_order_request(self, request_id: UUID) -> OrderRequest | None:
-        return next((order for order in self.order_requests if request_id == request_id), None)

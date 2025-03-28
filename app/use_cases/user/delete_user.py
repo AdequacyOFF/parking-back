@@ -4,15 +4,13 @@ from app.api.errors.api_error import SessionAlreadyExpiredApiError, UserNotFound
 from app.api.user.schemas import DeleteUserResponse
 from app.domain.exception import SessionAlreadyExpiredException
 from app.dto.user import GetUserSessionForDeleteCMD
-from app.infrastructure.metrics import MetricClient, MetricsType
 from app.repositories.exception import RepositoryNotFoundException
 from app.repositories.uow import UnitOfWork
 
 
 class DeleteUserUseCase:
-    def __init__(self, uow: UnitOfWork, metric_manager: MetricClient):
+    def __init__(self, uow: UnitOfWork):
         self._uow = uow
-        self._metric_manager = metric_manager
 
     async def __call__(self, user_id: UUID) -> DeleteUserResponse:
         async with self._uow.begin():
@@ -30,5 +28,4 @@ class DeleteUserUseCase:
             user.delete()
 
             await self._uow.user_repository.save(user)
-            self._metric_manager.register_metric(MetricsType.DELETED_USER)
             return DeleteUserResponse()
