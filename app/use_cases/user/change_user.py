@@ -7,7 +7,7 @@ from app.repositories.exception import RepositoryNotFoundException
 from app.repositories.uow import UnitOfWork
 
 from app.utils.auth.hash import AuthHash
-
+import  loguru
 
 class ChangeUserUseCase:
     def __init__(self, uow: UnitOfWork):
@@ -20,7 +20,7 @@ class ChangeUserUseCase:
             except RepositoryNotFoundException as e:
                 raise UserNotFoundApiError from e
 
-            if user.status != UserStatus.ACTIVE:
+            if user.status == UserStatus.DELETED:
                 raise InvalidUserStatusApiError
 
             if cmd.password is None:

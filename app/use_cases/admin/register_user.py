@@ -23,7 +23,8 @@ class UserRegisterUseCase:
             except RepositoryNotFoundException as e:
                 raise AccessDeniedApiError from e
 
-            if cmd.phone_number in self._uow.user_repository.get_all_phone_numbers():
+            numbers = await self._uow.user_repository.get_all_phone_numbers()
+            if cmd.phone_number in numbers:
                 raise UserAlreadyRegisteredApiError
 
             alphabet = string.ascii_letters + string.digits + "!@#$%^&*"

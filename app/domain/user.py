@@ -12,6 +12,7 @@ from app.dto.user import (
     GetUserSessionForDeleteCMD,
     UserStatus,
 )
+from uuid import uuid4
 
 
 @dataclass
@@ -79,7 +80,7 @@ class User:
     @classmethod
     def register(cls, cmd: RegisterUserDTO) -> "User":
         return cls(
-            id=UUID(),
+            id=uuid4(),
             phone_number=cmd.phone_number,
             status=UserStatus.REGISTERED,
             first_name=cmd.first_name,

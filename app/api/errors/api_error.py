@@ -16,6 +16,12 @@ class BusinessApiError(ApiError):
     pass
 
 
+class OnlyForUserApiError(BusinessApiError):
+    status_code = 400
+    message = "Невозможно для админа"
+    error_code = ErrorCode.ONLY_FOR_USER
+
+
 class UserNotFoundApiError(BusinessApiError):
     status_code = 404
     message = "Пользователь не найден"
