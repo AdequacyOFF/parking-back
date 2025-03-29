@@ -2,11 +2,10 @@ from typing import Iterable, Optional, Protocol
 from uuid import UUID
 
 from aioredis import Redis
-from orjson import dumps, loads
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.user import OTP, Session, User
+from app.domain.user import Session, User
 from app.dto.session import SessionStatus
 from app.dto.user import UserStatus
 from app.repositories.exception import RepositoryNotFoundException
@@ -26,12 +25,6 @@ class IUserRepository(Protocol):
     async def get_w_exp_sessions(self, batch_size: int) -> Iterable[User]:
         pass
 
-    async def _get_otp(self, user: User) -> OTP | None:
-        pass
-
-    async def _save_otp(self, user: User) -> None:
-        pass
-
 
 class UserRepository(IUserRepository):
     def __init__(self, session: AsyncSession, otp_redis: Redis) -> None:
@@ -46,7 +39,6 @@ class UserRepository(IUserRepository):
         user: Optional[User] = (await self.session.execute(stmt)).scalar()
         if not user:
             raise RepositoryNotFoundException
-        user.otp_code = await self._get_otp(user)
         self.seen.add(user)
         return user
 
@@ -57,12 +49,10 @@ class UserRepository(IUserRepository):
         user: Optional[User] = (await self.session.execute(stmt)).scalar()
         if not user:
             raise RepositoryNotFoundException
-        user.otp_code = await self._get_otp(user)
         self.seen.add(user)
         return user
 
     async def save(self, user: User) -> None:
-        await self._save_otp(user)
         self.session.add(user)
         self.seen.add(user)
 
@@ -78,14 +68,9 @@ class UserRepository(IUserRepository):
         sessions = (await self.session.execute(stmt)).scalars().all()
         return sessions
 
-    async def _get_otp(self, user: User) -> OTP | None:
-        otp = await self.redis.get(str(user.id))
-        if otp is None:
-            return otp
-        return OTP(**loads(otp))
-
-    async def _save_otp(self, user: User) -> None:
-        if user.otp_code is None:
-            await self.redis.delete(str(user.id))
-        else:
-            await self.redis.set(str(user.id), dumps(user.otp_code))
+    async def get_all_phone_numbers(self) -> Iterable[str]:
+        stmt = (
+            select(User.phone_number)
+        )
+        phone_numbers = (await self.session.execute(stmt)).scalars().all()
+        return phone_numbers

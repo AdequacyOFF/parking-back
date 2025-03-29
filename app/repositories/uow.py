@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_scoped_session
 
 from app.infrastructure.db import Database, SessionContext
 from app.repositories.admin import AdminRepository, IAdminRepository
-from app.repositories.outbox import OutboxMessageRepository
 from app.repositories.user import UserRepository
 
 
@@ -68,10 +67,6 @@ class UnitOfWork(IUnitOfWork):
         if self.accounts is None:
             self.accounts = UserRepository(session=self.session, otp_redis=self._otp_redis)
         return self.accounts
-
-    @property
-    def outbox_repository(self) -> OutboxMessageRepository:
-        return OutboxMessageRepository(session=self.session)
 
     @property
     def admin_repository(self) -> IAdminRepository:

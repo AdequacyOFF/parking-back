@@ -38,6 +38,4 @@ class GetUserView:
                 status=user.status,
                 first_name=user.first_name,
                 last_name=user.last_name,
-                sex=user.sex,
-                birth_date=user.birth_date,
             )

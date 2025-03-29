@@ -2,9 +2,11 @@ from uuid import UUID
 
 from app.api.errors.api_error import InvalidUserStatusApiError, UserNotFoundApiError
 from app.api.user.schemas import ChangeUser, ChangeUserCMD, ChangeUserResponse
-from app.dto.user import UserStatus
+from app.dto.user import UserStatus, RegisterUserDTO
 from app.repositories.exception import RepositoryNotFoundException
 from app.repositories.uow import UnitOfWork
+
+from app.utils.auth.hash import AuthHash
 
 
 class ChangeUserUseCase:
@@ -21,6 +23,18 @@ class ChangeUserUseCase:
             if user.status != UserStatus.ACTIVE:
                 raise InvalidUserStatusApiError
 
+            if cmd.password is None:
+                password_hash = user.password_hash
+            else:
+                password_hash = AuthHash.hash_password(cmd.password)
+
+            RegisterUserDTO(
+                phone_number=getattr(cmd, 'phone_number', user.phone_number),
+                password_hash=password_hash,
+                first_name=getattr(cmd, 'first_name', user.first_name),
+                last_name=getattr(cmd, 'last_name', user.last_name),
+                patronymic=getattr(cmd, 'patronymic', user.patronymic),
+            )
             user.update(**cmd.dict(exclude_unset=True))
 
             await self._uow.user_repository.save(user)
@@ -31,5 +45,6 @@ class ChangeUserUseCase:
                     status=user.status,
                     first_name=user.first_name,
                     last_name=user.last_name,
+                    patronymic=user.patronymic,
                 )
             )

@@ -5,7 +5,5 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
                    <include file="sql/20230220_0001_init_b3959d.sql" relativeToChangelogFile="true" />
                    <include file="sql/20230222_0002_user_305e62.sql" relativeToChangelogFile="true" />
-                   <include file="sql/20230527_0003_devices_c96dd3.sql" relativeToChangelogFile="true" />
-                   <include file="sql/20250313_0004_add_admin_table_7a89c7.sql" relativeToChangelogFile="true" />
-                   <include file="sql/20250313_0005_fcm_token_9ca6b8.sql" relativeToChangelogFile="true" />
+                   <include file="sql/20250313_0003_add_admin_table_7a89c7.sql" relativeToChangelogFile="true" />
 </databaseChangeLog>

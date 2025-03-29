@@ -5,7 +5,7 @@ from app.api.auth.handlers import router as auth_router
 from app.api.token.handlers import router as token_router
 from app.api.user.handlers import router as user_router
 
-API_V1_PREFIX = "/api/v1"
+API_V1_PREFIX = "/api"
 
 root_router = APIRouter(prefix=API_V1_PREFIX)
 root_router.include_router(auth_router)

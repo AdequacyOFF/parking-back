@@ -16,5 +16,7 @@ user_table = Table(
     Column("status", String(length=50), nullable=False),
     Column("first_name", String(length=50), nullable=True),
     Column("last_name", String(length=50), nullable=True),
+    Column("patronymic", String(length=50), nullable=True),
+    Column("password_hash", String(255), nullable=False),
     schema=ACCOUNTS_SCHEMA,
 )

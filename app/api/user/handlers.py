@@ -4,24 +4,31 @@ from fastapi import APIRouter, Depends
 from app.api.errors.code import ErrorCode
 from app.api.models.base import ApiResponse
 from app.api.user.schemas import (
+    UserAuthCMD,
+    UserAuthResponse,
     ChangeUserCMD,
     ChangeUserResponse,
-    DeleteUserResponse,
-    GetFCMTokenResponse,
     GetUserResponse,
-    RegisterCMD,
-    RegisterResponse,
+
 )
 from app.dependencies.web_app import WebAppContainer
 from app.use_cases.user.change_user import ChangeUserUseCase
-from app.use_cases.user.delete_user import DeleteUserUseCase
-from app.use_cases.user.register import RegisterUseCase
+from app.use_cases.user.auth import UserAuthUseCase
 from app.utils.auth.jwt import AuthJWT
 from app.utils.auth.schemas import AccessTokenData
-from app.views.user.get_fcm_token import GetFCMTokenView
 from app.views.user.me import GetUserView
 
 router = APIRouter(prefix="/users", tags=["user"])
+
+
+@router.post("/login", description="Login")
+@inject
+async def login(
+    command: UserAuthCMD,
+    use_case: UserAuthUseCase = Depends(Provide[WebAppContainer.user_auth_use_case]),
+) -> ApiResponse[UserAuthResponse]:
+    result = await use_case(command=command)
+    return ApiResponse(result=result, error_code=ErrorCode.SUCCESS, message="Success")
 
 
 @router.get("/me", response_model=ApiResponse[GetUserResponse], description="Returns current user data")
@@ -44,33 +51,3 @@ async def change_user(
     result = await use_case(user_id=token_data.user.id, cmd=command)
     return ApiResponse(error_code=ErrorCode.SUCCESS, message="Success", result=result)
 
-
-@router.post("/register", response_model=ApiResponse[RegisterResponse], description="Take data and register user")
-@inject
-async def register(
-    command: RegisterCMD,
-    token_data: AccessTokenData = Depends(AuthJWT.access_status_required()),
-    use_case: RegisterUseCase = Depends(Provide[WebAppContainer.user_register_use_case]),
-) -> ApiResponse[RegisterResponse]:
-    result = await use_case(user_id=token_data.user.id, cmd=command)
-    return ApiResponse(result=result, error_code=ErrorCode.SUCCESS, message="Success")
-
-
-@router.get("/fcmToken", response_model=ApiResponse[GetFCMTokenResponse], description="Get user FCM token")
-@inject
-async def get_fcm_token(
-    token_data: AccessTokenData = Depends(AuthJWT.access_status_required()),
-    view: GetFCMTokenView = Depends(Provide[WebAppContainer.user_get_fcm_token_view]),
-) -> ApiResponse[GetFCMTokenResponse]:
-    result = await view(user_id=token_data.user.id)
-    return ApiResponse(result=result, error_code=ErrorCode.SUCCESS, message="Success")
-
-
-@router.delete("/delete", description="Delete user")
-@inject
-async def delete_user(
-    token_data: AccessTokenData = Depends(AuthJWT.access_status_required()),
-    use_case: DeleteUserUseCase = Depends(Provide[WebAppContainer.delete_user_use_case]),
-) -> ApiResponse[DeleteUserResponse]:
-    result = await use_case(user_id=token_data.user.id)
-    return ApiResponse(result=result, error_code=ErrorCode.SUCCESS, message="Success")

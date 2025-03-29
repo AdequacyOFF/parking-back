@@ -4,6 +4,7 @@ from fastapi import Depends
 from app.api.errors.api_error import AccessDeniedApiError
 from app.dependencies.web_app import WebAppContainer
 from app.domain.admin import Admin
+from app.domain.user import User
 from app.repositories.exception import RepositoryNotFoundException
 from app.repositories.uow import UnitOfWork
 from app.utils.auth.jwt import AuthJWT
@@ -18,6 +19,19 @@ async def auth_admin(
     async with uow.begin():
         try:
             admin = await uow.admin_repository.get(admin_id=token_data.user.id)
+        except RepositoryNotFoundException:
+            raise AccessDeniedApiError
+        return admin
+
+
+@inject
+async def auth_user(
+        token_data: AccessTokenData = Depends(AuthJWT.access_status_required()),
+        uow: UnitOfWork = Depends(Provide[WebAppContainer.unit_of_work]),
+) -> User:
+    async with uow.begin():
+        try:
+            admin = await uow.user_repository.get(user_id=token_data.user.id)
         except RepositoryNotFoundException:
             raise AccessDeniedApiError
         return admin

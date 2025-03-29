@@ -3,7 +3,9 @@ CREATE TABLE IF NOT EXISTS accounts.user (
     phone_number VARCHAR(50) NOT NULL,
     status VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NULL,
-    last_name VARCHAR(50) NULL
+    last_name VARCHAR(50) NULL,
+    patronymic VARCHAR(50) NULL,
+    password_hash VARCHAR(255) NOT NULL
 );
 CREATE INDEX IF NOT EXISTS phone_number_idx ON accounts.user USING btree(phone_number);
 
