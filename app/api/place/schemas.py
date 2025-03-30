@@ -17,15 +17,18 @@ class PlaceAssignCMD(ApiCamelModel):
     first_name: str = Field(examples=["Иван"], description="First name")
     last_name: str = Field(examples=["Иванов"], description="Last name")
     patronymic: str = Field(examples=["Иванович"], description="Patronymic")
-    place_id: int = Field(description="Place number (ID)")
 
 
 class PlaceAssignResponse(ApiCamelModel):
     place_id: int = Field(description="Place number (ID)")
-    owner_id: UUID = Field(description="User ID")
-    first_name: str = Field(examples=["Иван"], description="First name")
-    last_name: str = Field(examples=["Иванов"], description="Last name")
-    patronymic: str = Field(examples=["Иванович"], description="Patronymic")
+    owner_id: UUID | None = Field(description="User ID")
+    first_name: str | None = Field(examples=["Иван"], description="First name")
+    last_name: str | None = Field(examples=["Иванов"], description="Last name")
+    patronymic: str | None = Field(examples=["Иванович"], description="Patronymic")
     pass
+
+
+class GetParkingResponse(ApiCamelModel):
+    all_places: list[PlaceAssignResponse] = Field(description="List of all places")
 
 

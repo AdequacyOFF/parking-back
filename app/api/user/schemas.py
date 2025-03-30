@@ -35,13 +35,16 @@ class GetUserResponse(ApiCamelModel):
     first_name: str | None = Field(description="User first name")
     last_name: str | None = Field(description="User last name")
     patronymic: str | None = Field(description="User patronymic")
+    places_id: list[str] = Field(description="User places id")
 
 
 class ChangeUserCMD(ApiCamelModel):
     first_name: str | None = Field(None, examples=["Иван"], min_length=1, max_length=50, description="User first name")
     last_name: str | None = Field(None, examples=["Иванов"], min_length=1, max_length=50, description="User last name")
-    patronymic: str | None = Field(None, examples=["Иванович"], min_length=1, max_length=50, description="User patronymic")
-    phone_number: str | None = Field(None, examples=["+79997778855"], min_length=1, max_length=50, description="User phone number")
+    patronymic: str | None = Field(None, examples=["Иванович"], min_length=1, max_length=50,
+                                   description="User patronymic")
+    phone_number: str | None = Field(None, examples=["+79997778855"], min_length=1
+                                     , max_length=50, description="User phone number")
     password: str | None = Field(None, examples=["********"], min_length=8, max_length=16, description="User password")
 
     @field_validator("phone_number")

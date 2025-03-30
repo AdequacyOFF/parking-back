@@ -4,6 +4,7 @@ from sqlalchemy import select
 
 from app.api.errors.api_error import UserNotFoundApiError, OnlyForUserApiError
 from app.api.user.schemas import GetUserResponse
+from app.domain.place import Place
 from app.dto.user import UserStatus
 from app.persistent.db_schemas.user import user_table
 from app.persistent.db_schemas.admin import admins_table
@@ -38,6 +39,14 @@ class GetUserView:
             if not user or user.status == UserStatus.DELETED:
                 raise UserNotFoundApiError
 
+            places_id = []
+            all_places = await self._uow.place_repository.get_all_places()
+            for place in all_places:
+                if place.owner == user.id:
+                    places_id.append(str(place.id))
+            if len(places_id) == 0:
+                places_id.append("##")
+
             return GetUserResponse(
                 id=user.id,
                 phone_number=user.phone_number,
@@ -45,4 +54,5 @@ class GetUserView:
                 first_name=user.first_name,
                 last_name=user.last_name,
                 patronymic=user.patronymic,
+                places_id=places_id,
             )

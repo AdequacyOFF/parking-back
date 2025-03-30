@@ -8,7 +8,6 @@ from app.utils.dt_utils import get_now_as_tz
 from app.domain.exception import SessionAlreadyExpiredException
 
 
-
 @dataclass
 class Reservation:
     id: int
