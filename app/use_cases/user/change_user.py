@@ -7,7 +7,7 @@ from app.repositories.exception import RepositoryNotFoundException
 from app.repositories.uow import UnitOfWork
 
 from app.utils.auth.hash import AuthHash
-import  loguru
+
 
 class ChangeUserUseCase:
     def __init__(self, uow: UnitOfWork):

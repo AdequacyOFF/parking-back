@@ -25,6 +25,9 @@ class IUserRepository(Protocol):
     async def get_w_exp_sessions(self, batch_size: int) -> Iterable[User]:
         pass
 
+    async def get_by_full_name(self, last_name: str, first_name: str, patronymic: str, with_lock: bool = False) -> User:
+        pass
+
 
 class UserRepository(IUserRepository):
     def __init__(self, session: AsyncSession, otp_redis: Redis) -> None:
@@ -49,6 +52,22 @@ class UserRepository(IUserRepository):
         user: Optional[User] = (await self.session.execute(stmt)).scalar()
         if not user:
             raise RepositoryNotFoundException
+        self.seen.add(user)
+        return user
+
+    async def get_by_full_name(
+            self,
+            last_name: str,
+            first_name: str,
+            patronymic: str,
+            with_lock: bool = False,
+    ) -> User:
+        stmt = select(User).filter(User.last_name == last_name, User.first_name == first_name, User.status != UserStatus.DELETED)
+
+        user: Optional[User] = (await self.session.execute(stmt)).scalar()
+        if not user:
+            raise RepositoryNotFoundException
+
         self.seen.add(user)
         return user
 

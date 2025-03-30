@@ -22,6 +22,12 @@ class OnlyForUserApiError(BusinessApiError):
     error_code = ErrorCode.ONLY_FOR_USER
 
 
+class ParkingDontExistApiError(BusinessApiError):
+    status_code = 404
+    message = "Парковка не инициализирована"
+    error_code = ErrorCode.PARKING_DONT_EXISTS
+
+
 class UserNotFoundApiError(BusinessApiError):
     status_code = 404
     message = "Пользователь не найден"

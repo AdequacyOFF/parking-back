@@ -1,5 +1,5 @@
 from app.api.errors.api_error import ParkingAlreadyExistsApiError
-from app.api.admin.schemas import ParkingCreateCMD, ParkingCreateResponse
+from app.api.place.schemas import ParkingCreateCMD, ParkingCreateResponse
 from app.repositories.uow import UnitOfWork
 from app.domain.place import Place
 

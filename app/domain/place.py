@@ -10,3 +10,6 @@ class Place:
     car_number: str | None = field(default=None)
     owner: UUID | None = field(default=None)
     is_busy: bool = field(default=False)
+
+    def assign(self, owner_id: UUID) -> None:
+        self.owner = owner_id
