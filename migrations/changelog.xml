@@ -9,4 +9,5 @@
                    <include file="sql\20250329_0004_add_parcking_shema_959982.sql" relativeToChangelogFile="true" />
                    <include file="sql\20250329_0005_add_parcking_places_table_c1aaf4.sql" relativeToChangelogFile="true" />
                    <include file="sql\20250329_0006_add_parcking_reservations_table_9e0177.sql" relativeToChangelogFile="true" />
+                   <include file="sql\20250330_0007_auto_add_admin_a50b43.sql" relativeToChangelogFile="true" />
 </databaseChangeLog>
