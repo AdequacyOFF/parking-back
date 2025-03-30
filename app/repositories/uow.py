@@ -7,6 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_scoped_session
 
 from app.infrastructure.db import Database, SessionContext
 from app.repositories.admin import AdminRepository, IAdminRepository
+from app.repositories.places import IPlaceRepository, PlaceRepository
+from app.repositories.reservations import IReservationRepository, ReservationRepository
 from app.repositories.user import UserRepository
 
 
@@ -71,4 +73,12 @@ class UnitOfWork(IUnitOfWork):
     @property
     def admin_repository(self) -> IAdminRepository:
         return AdminRepository(session=self.session)
+
+    @property
+    def place_repository(self) -> IPlaceRepository:
+        return PlaceRepository(session=self.session)
+
+    @property
+    def reservation_repository(self) -> IReservationRepository:
+        return ReservationRepository(session=self.session)
 

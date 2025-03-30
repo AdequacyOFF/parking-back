@@ -10,7 +10,17 @@ from app.utils.model import ApiCamelModel
 
 class UserAuthCMD(ApiCamelModel):
     phone_number: str = Field(description="Authorization Username", min_length=1, max_length=50)
-    password: str = Field(description="Authorization Password", min_length=1, max_length=50)
+    password: str = Field(description="Authorization Password", min_length=8, max_length=20)
+
+    @field_validator("phone_number")
+    def validate_phone_number(cls, phone_number: str) -> str:
+        try:
+            parsed_number = phonenumbers.parse(phone_number)
+        except NumberParseException as e:
+            raise ValueError("Invalid phone number format") from e
+        if not phonenumbers.is_valid_number(parsed_number):
+            raise ValueError("Invalid phone number")
+        return f"{parsed_number.country_code}{parsed_number.national_number}"
 
 
 class UserAuthResponse(ApiCamelModel):

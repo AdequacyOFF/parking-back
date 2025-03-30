@@ -9,7 +9,9 @@ from app.api.admin.schemas import (
     UserRegisterCMD,
     UserRegisterResponse,
     UserDeleteCMD,
-    UserDeleteResponse
+    UserDeleteResponse,
+    ParkingCreateCMD,
+    ParkingCreateResponse
 )
 from app.api.errors.api_error import ErrorCode
 from app.api.models.base import ApiResponse
@@ -18,6 +20,7 @@ from app.use_cases.admin.auth import AdminAuthUseCase
 from app.use_cases.admin.refresh import AdminTokenRefreshUseCase
 from app.use_cases.admin.delete_user import UserDeleteUseCase
 from app.use_cases.admin.register_user import UserRegisterUseCase
+from app.use_cases.place.create_parking import ParkingCreateUseCase
 from app.utils.auth.jwt import AuthJWT
 from app.utils.auth.schemas import RefreshTokenData, AccessTokenData
 
@@ -65,4 +68,14 @@ async def delete_user(
     use_case: UserDeleteUseCase = Depends(Provide[WebAppContainer.user_delete_use_case]),
 ) -> ApiResponse[UserDeleteResponse]:
     result = await use_case(admin_id=token_data.user.id, cmd=command)
+    return ApiResponse(result=result, error_code=ErrorCode.SUCCESS, message="Success")
+
+
+@router.post("/createParking", response_model=ApiResponse[ParkingCreateResponse], description="Create new parking")
+@inject
+async def register(
+    command: ParkingCreateCMD,
+    use_case: ParkingCreateUseCase = Depends(Provide[WebAppContainer.parking_create_use_case]),
+) -> ApiResponse[ParkingCreateResponse]:
+    result = await use_case(cmd=command)
     return ApiResponse(result=result, error_code=ErrorCode.SUCCESS, message="Success")

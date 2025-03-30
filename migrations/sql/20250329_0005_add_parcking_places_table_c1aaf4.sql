@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS parcking.places (
+CREATE TABLE IF NOT EXISTS parking.places (
     id SERIAL PRIMARY KEY,
     car_number VARCHAR(20) NULL,
     owner UUID NULL,

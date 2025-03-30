@@ -14,6 +14,7 @@ from app.use_cases.auth.logout import LogoutUseCase
 from app.use_cases.token.refresh import RefreshUseCase
 from app.use_cases.user.auth import UserAuthUseCase
 from app.use_cases.user.change_user import ChangeUserUseCase
+from app.use_cases.place.create_parking import ParkingCreateUseCase
 from app.views.user.me import GetUserView
 
 # from app.workers.account.account_update import CronAccountUpdatedHandler, init_cron_account_handler
@@ -50,6 +51,7 @@ class WebAppContainer(containers.DeclarativeContainer):
     user_delete_use_case = providers.Factory(UserDeleteUseCase, uow=unit_of_work)
     user_register_use_case = providers.Factory(UserRegisterUseCase, uow=unit_of_work)
     user_change_user = providers.Factory(ChangeUserUseCase, uow=unit_of_work)
+    parking_create_use_case = providers.Factory(ParkingCreateUseCase, uow=unit_of_work)
 
     token_refresh_use_case = providers.Factory(RefreshUseCase, uow=unit_of_work)
     auth_logout_use_case = providers.Factory(LogoutUseCase, uow=unit_of_work)

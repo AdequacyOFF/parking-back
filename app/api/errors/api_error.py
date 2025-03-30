@@ -34,6 +34,12 @@ class UserAlreadyRegisteredApiError(BusinessApiError):
     error_code = ErrorCode.USER_IS_ALREADY_REGISTERED
 
 
+class ParkingAlreadyExistsApiError(BusinessApiError):
+    status_code = 400
+    message = "Парковка уже создана"
+    error_code = ErrorCode.PARKING_IS_ALREADY_EXISTS
+
+
 class SessionAlreadyExpiredApiError(BusinessApiError):
     status_code = 400
     message = "Срок действия сессии истек"

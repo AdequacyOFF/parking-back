@@ -64,3 +64,14 @@ class UserDeleteCMD(ApiCamelModel):
 
 class UserDeleteResponse(ApiCamelModel):
     pass
+
+
+class ParkingCreateCMD(ApiCamelModel):
+    count: int = Field(examples=[100], description="Count of places on parking")
+
+
+class ParkingCreateResponse(ApiCamelModel):
+    pass
+
+
+
